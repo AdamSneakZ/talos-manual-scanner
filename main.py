@@ -128,12 +128,13 @@ def check_signals(symbol):
             if key not in sent_signals:
                 sent_signals.add(key)
                 tp  = c['close'] + (c['close'] - sq_low) * 2
-                msg = (f"Entry:  {c['close']:.4f}\n"
+                msg = (f"Timeframe: 1H MANUAL\n"
+                       f"Entry:  {c['close']:.4f}\n"
                        f"SL:     {sq_low:.4f}  ({sl_dist_l:.1f}%)\n"
                        f"TP:     {tp:.4f}  (2R)\n"
                        f"Vol:    {c['volume'] / c['vol_sma']:.1f}x avg\n"
                        f"RSI:    {c['rsi']:.1f}")
-                send_ntfy(f"ENTER LONG — {ticker}", msg,
+                send_ntfy(f"MANUAL LONG — {ticker} 1H", msg,
                           priority='urgent', tags='green_circle')
 
         elif enter_short:
@@ -141,19 +142,20 @@ def check_signals(symbol):
             if key not in sent_signals:
                 sent_signals.add(key)
                 tp  = c['close'] - (sq_high - c['close']) * 2
-                msg = (f"Entry:  {c['close']:.4f}\n"
-                       f"SL:     {sq_low:.4f}  ({sl_dist_s:.1f}%)\n"
+                msg = (f"Timeframe: 1H MANUAL\n"
+                       f"Entry:  {c['close']:.4f}\n"
+                       f"SL:     {sq_high:.4f}  ({sl_dist_s:.1f}%)\n"
                        f"TP:     {tp:.4f}  (2R)\n"
                        f"Vol:    {c['volume'] / c['vol_sma']:.1f}x avg\n"
                        f"RSI:    {c['rsi']:.1f}")
-                send_ntfy(f"ENTER SHORT — {ticker}", msg,
+                send_ntfy(f"MANUAL SHORT — {ticker} 1H", msg,
                           priority='urgent', tags='red_circle')
 
         elif sl_wide_l:
             key = (ticker, 'SL_WIDE_L', candle_ts)
             if key not in sent_signals:
                 sent_signals.add(key)
-                send_ntfy(f"SL TOO WIDE — {ticker}",
+                send_ntfy(f"MANUAL SL WIDE — {ticker} 1H",
                           f"Long signal valid but SL is {sl_dist_l:.1f}% — skip",
                           priority='default', tags='warning')
 
@@ -161,7 +163,7 @@ def check_signals(symbol):
             key = (ticker, 'SL_WIDE_S', candle_ts)
             if key not in sent_signals:
                 sent_signals.add(key)
-                send_ntfy(f"SL TOO WIDE — {ticker}",
+                send_ntfy(f"MANUAL SL WIDE — {ticker} 1H",
                           f"Short signal valid but SL is {sl_dist_s:.1f}% — skip",
                           priority='default', tags='warning')
 
