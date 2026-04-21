@@ -88,8 +88,8 @@ def check_signals(symbol):
         df_htf['ema50'] = ta.ema(df_htf['close'], length=50)
         htf_bull        = df_htf['close'].iloc[-1] > df_htf['ema50'].iloc[-1]
 
-        # Current candle — aligns with what TradingView shows live
-        c         = df.iloc[-1]
+        # Last CLOSED candle — matches TradingView bar-close logic
+        c         = df.iloc[-2]
         candle_ts = str(c['timestamp'])
 
         body     = abs(c['close'] - c['open'])
@@ -102,7 +102,7 @@ def check_signals(symbol):
         rsi_ok_l = RSI_MIN_L <= c['rsi'] <= RSI_MAX_L
         rsi_ok_s = RSI_MIN_S <= c['rsi'] <= RSI_MAX_S
 
-        window    = df.iloc[-SQ_LOOKBACK - 2:-1]
+        window    = df.iloc[-SQ_LOOKBACK - 3:-2]
         sq_low    = window['low'].min()
         sq_high   = window['high'].max()
         sl_dist_l = (c['close'] - sq_low)  / c['close'] * 100
@@ -112,6 +112,7 @@ def check_signals(symbol):
 
         trend_ok_l = c['close'] > c['ema50'] and htf_bull
         trend_ok_s = c['close'] < c['ema50'] and not htf_bull
+
 
         raw_l = trend_ok_l and c['st_flip_long']  and c['had_sq'] and rsi_ok_l and vol_ok and clean_l
         raw_s = trend_ok_s and c['st_flip_short'] and c['had_sq'] and rsi_ok_s and vol_ok and clean_s
