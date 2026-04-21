@@ -88,8 +88,8 @@ def check_signals(symbol):
         df_htf['ema50'] = ta.ema(df_htf['close'], length=50)
         htf_bull        = df_htf['close'].iloc[-1] > df_htf['ema50'].iloc[-1]
 
-        # Last COMPLETED candle — index -2 avoids the still-forming current candle
-        c         = df.iloc[-2]
+        # Current candle — aligns with what TradingView shows live
+        c         = df.iloc[-1]
         candle_ts = str(c['timestamp'])
 
         body     = abs(c['close'] - c['open'])
@@ -186,8 +186,5 @@ send_ntfy("Talos Scanner Online",
 
 while True:
     run_scan()
-    now               = datetime.now()
-    secs_to_next_hour = 3600 - (now.minute * 60 + now.second)
-    sleep_time        = secs_to_next_hour + 120
-    print(f"Next scan in {sleep_time // 60}m {sleep_time % 60}s")
-    time.sleep(sleep_time)
+    print(f"Next scan in 5 minutes...")
+    time.sleep(300)
